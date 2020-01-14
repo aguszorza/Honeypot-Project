@@ -31,16 +31,15 @@ class MyTopology(Topo):
                         'server': 'hs{}' }
 
         # Routers from the network
-        external_router = self.addNode('r0', cls=LinuxRouter, ip='200.0.0.1')
-        internal_router = self.addNode('r1', cls=LinuxRouter, ip='192.168.1.1')
+        internal_router = self.addNode('r1', cls=LinuxRouter, ip='192.168.1.1/24')
 
         # External host used as an attacker
         external_host = self.addHost('attacker',
                                      ip='200.0.0.2/24',
                                      defaultRoute='via 200.0.0.1')
 
-        self.addLink( external_host, external_router, intfName2='r0-eth1',
-                      params2={ 'ip' : '200.0.0.1/24' } )
+        external_switch = self.addSwitch('se1')
+
 
         # Switches from the network
         switches = { 'DMZ': self.addSwitch('s1'),
@@ -74,12 +73,11 @@ class MyTopology(Topo):
 
         web = self.addHost(hosts_names['DMZ'].format(1),
                            ip='192.168.1.3/24',
-                           defaultRoute='via 192.168.1.1, via 192.168.1.1')
+                           defaultRoute='via 192.168.1.1')
 
         self.addLink(switches['DMZ'], web)
         self.addLink(switches['server'], server)
-        self.addLink( switches['DMZ'], external_router, intfName2='r0-eth2',
-                      params2={ 'ip' : '192.168.1.2/24' } )
+        self.addLink(external_switch, external_host)
 
         self.addLink( switches['DMZ'], internal_router, intfName2='r1-eth1',
                       params2={ 'ip' : '192.168.1.1/24' } )
@@ -89,7 +87,8 @@ class MyTopology(Topo):
                       params2={ 'ip' : '192.168.3.1/24' } )
         self.addLink( switches['server'], internal_router, intfName2='r1-eth4',
                       params2={ 'ip' : '192.168.4.1/24' } )
-
+        self.addLink( external_switch, internal_router, intfName2='r1-eth5',
+                      params2={ 'ip' : '200.0.0.1/24' } )
 
 
 
