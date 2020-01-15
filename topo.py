@@ -31,12 +31,12 @@ class MyTopology(Topo):
                         'server': 'hs{}' }
 
         # Routers from the network
-        internal_router = self.addNode('r1', cls=LinuxRouter, ip='192.168.1.1/24')
+       # internal_router = self.addNode('r1', cls=LinuxRouter, ip='192.168.1.1/24')
 
         # External host used as an attacker
-        external_host = self.addHost('attacker',
-                                     ip='200.0.0.2/24',
-                                     defaultRoute='via 200.0.0.1')
+        #external_host = self.addHost('attacker',
+         #                            ip='200.0.0.2/24',
+          #                           defaultRoute='via 200.0.0.1')
 
         switch = self.addSwitch('s1')
             
@@ -74,10 +74,10 @@ class MyTopology(Topo):
         self.addLink(switch, web)
         self.addLink(switch, server)
 
-        self.addLink( switch, internal_router, intfName2='r1-eth1',
-                      params2={ 'ip' : '192.168.1.1/24' } )
-        self.addLink( external_host, internal_router, intfName2='r1-eth2',
-                      params2={ 'ip' : '200.0.0.1/24' } )
+      #  self.addLink( switch, internal_router, intfName2='r1-eth1',
+       #               params2={ 'ip' : '192.168.1.1/24' } )
+       # self.addLink( external_host, internal_router, intfName2='r1-eth2',
+        #              params2={ 'ip' : '200.0.0.1/24' } )
         
 
 
