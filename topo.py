@@ -20,7 +20,7 @@ class MyTopology(Topo):
         # Initialize topology
         Topo.__init__(self)
 
-        ip_addresses = { 'DMZ': '192.168.1.2/24', 
+        ip_addresses = { 'DMZ': '192.168.1.{}/24', 
                          'admins': '192.168.1.{}/24',
                          'workers': '192.168.1.{}/24',
                          'server': '192.168.1.{}/24' }
@@ -43,7 +43,7 @@ class MyTopology(Topo):
 
         # Add admins host to the network
         host_number = 1
-        address_number = 3
+        address_number = 100
         for admin in range(admins):
             name = hosts_names['admins'].format(host_number)
             ip_address = ip_addresses['admins'].format(address_number)
@@ -67,21 +67,14 @@ class MyTopology(Topo):
                               ip=ip_addresses['server'].format(address_number),
                               defaultRoute='via 192.168.1.1')
 
+        address_number += 1
+
         web = self.addHost(hosts_names['DMZ'].format(1),
-                           ip=ip_addresses['DMZ'],
+                           ip=ip_addresses['DMZ'].format(address_number),
                            defaultRoute='via 192.168.1.1')
 
         self.addLink(switch, web)
         self.addLink(switch, server)
-
-      #  self.addLink( switch, internal_router, intfName2='r1-eth1',
-       #               params2={ 'ip' : '192.168.1.1/24' } )
-       # self.addLink( external_host, internal_router, intfName2='r1-eth2',
-        #              params2={ 'ip' : '200.0.0.1/24' } )
-        
-
-
-
 
 
 topos = {'topo': (lambda admins=2, workers=2: MyTopology(admins=admins, workers=workers))}
