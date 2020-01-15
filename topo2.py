@@ -20,10 +20,10 @@ class MyTopology(Topo):
         # Initialize topology
         Topo.__init__(self)
 
-        ip_addresses = { 'DMZ': '192.168.1.2/24', 
-                         'admins': '192.168.1.{}/24',
-                         'workers': '192.168.1.{}/24',
-                         'server': '192.168.1.{}/24' }
+        ip_addresses = { 'DMZ': '192.168.1.{}/24', 
+                         'admins': '192.168.2.{}/24',
+                         'workers': '192.168.3.{}/24',
+                         'server': '192.168.4.{}/24' }
 
         hosts_names = { 'DMZ': 'hd{}', 
                         'admins': 'ha{}',
@@ -38,47 +38,57 @@ class MyTopology(Topo):
                                      ip='200.0.0.2/24',
                                      defaultRoute='via 200.0.0.1')
 
-        switch = self.addSwitch('s1')
+        external_switch = self.addSwitch('se1')
+
+
+        # Switches from the network
+        switches = { 'DMZ': self.addSwitch('s1'),
+                     'admins': self.addSwitch('s2'),
+                     'workers': self.addSwitch('s3'),
+                     'server': self.addSwitch('s4') }
             
 
         # Add admins host to the network
         host_number = 1
-        address_number = 3
         for admin in range(admins):
             name = hosts_names['admins'].format(host_number)
-            ip_address = ip_addresses['admins'].format(address_number)
-            host = self.addHost(name, ip=ip_address, defaultRoute='via 192.168.1.1')
+            ip_address = ip_addresses['admins'].format(host_number + 1)
+            host = self.addHost(name, ip=ip_address, defaultRoute='via 192.168.2.1')
             host_number += 1
-            address_number += 1
-            self.addLink(switch, host)
+            self.addLink(switches['admins'], host)
 
-        host_number = 1
         # Add workers host to the network
+        host_number = 1
         for worker in range(workers):
             name = hosts_names['workers'].format(host_number)
-            ip_address = ip_addresses['workers'].format(address_number)
-            host = self.addHost(name, ip=ip_address, defaultRoute='via 192.168.1.1')
+            ip_address = ip_addresses['workers'].format(host_number + 1)
+            host = self.addHost(name, ip=ip_address, defaultRoute='via 192.168.3.1')
             host_number += 1
-            address_number += 1
-            self.addLink(switch, host)
+            self.addLink(switches['workers'], host)
 
 
         server = self.addHost(hosts_names['server'].format(1),
-                              ip=ip_addresses['server'].format(address_number),
-                              defaultRoute='via 192.168.1.1')
+                              ip='192.168.4.2/24',
+                              defaultRoute='via 192.168.4.1')
 
         web = self.addHost(hosts_names['DMZ'].format(1),
-                           ip=ip_addresses['DMZ'],
+                           ip='192.168.1.2/24',
                            defaultRoute='via 192.168.1.1')
 
-        self.addLink(switch, web)
-        self.addLink(switch, server)
+        self.addLink(switches['DMZ'], web)
+        self.addLink(switches['server'], server)
+        self.addLink(external_switch, external_host)
 
-        self.addLink( switch, internal_router, intfName2='r1-eth1',
+        self.addLink( switches['DMZ'], internal_router, intfName2='r1-eth1',
                       params2={ 'ip' : '192.168.1.1/24' } )
-        self.addLink( external_host, internal_router, intfName2='r1-eth2',
+        self.addLink( switches['admins'], internal_router, intfName2='r1-eth2',
+                      params2={ 'ip' : '192.168.2.1/24' } )
+        self.addLink( switches['workers'], internal_router, intfName2='r1-eth3',
+                      params2={ 'ip' : '192.168.3.1/24' } )
+        self.addLink( switches['server'], internal_router, intfName2='r1-eth4',
+                      params2={ 'ip' : '192.168.4.1/24' } )
+        self.addLink( external_switch, internal_router, intfName2='r1-eth5',
                       params2={ 'ip' : '200.0.0.1/24' } )
-        
 
 
 

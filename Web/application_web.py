@@ -2,6 +2,7 @@
 
 from bottle import route, run, template, request, app, redirect, static_file
 from beaker.middleware import SessionMiddleware
+import sys
 
 session_opts = {
     'session.type': 'file',
@@ -56,7 +57,10 @@ def checkAuth(username, password):
     return None
     
 if __name__ == '__main__':
-    run (host='192.168.1.3', port=80, app=myapp)
+    address = 'localhost'
+    if (len(sys.argv) > 1):
+        address = sys.argv[1]
+    run (host=address, port=80, app=myapp)
     
 
 
