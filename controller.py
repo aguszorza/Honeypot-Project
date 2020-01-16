@@ -115,7 +115,7 @@ class MyController(EventMixin):
         text = "Making rule for sending packet in switch: " + dpidToStr(dpid) + '\n'
         text += "Ethernet: " + str(eth_packet.src) + " -> " + str(eth_packet.dst) + '\n'
 
-        alert = "Attack detected: {}\n\tEthernet: {} -> {}".format(eth_packet.payload, eth_packet.src, eth_packet.dst)
+        alert = "Possible attack detected: {}\n\tEthernet: {} -> {}".format(eth_packet.payload, eth_packet.src, eth_packet.dst)
 
         #update flow table
         msg = of.ofp_flow_mod()
@@ -142,8 +142,7 @@ class MyController(EventMixin):
         print text
 
         # Log the alert
-        if (str(ip_packet.srcip) == '192.168.1.7'):
-            log.error(alert)
+        log.error(alert)
 
         ports_used[dpid][port] += 1
 
