@@ -142,7 +142,8 @@ class MyController(EventMixin):
         print text
 
         # Log the alert
-        log.error(alert)
+        if (str(ip_packet.srcip) == '192.168.1.7'):
+            log.error(alert)
 
         ports_used[dpid][port] += 1
 
