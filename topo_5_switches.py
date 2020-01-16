@@ -31,7 +31,16 @@ class MyTopology(Topo):
                         'server': 'hs{}' }
 
 
+        # Switches from the network
         switch = self.addSwitch('s1')
+        switches = { "DMZ": self.addSwitch('s2'),
+                     "admins": self.addSwitch('s3'),
+                     "workers": self.addSwitch('s4'),
+                     "server": self.addSwitch('s5') }
+        self.addLink(switch, switches["DMZ"])
+        self.addLink(switch, switches["admins"])
+        self.addLink(switch, switches["workers"])
+        self.addLink(switch, switches["server"])
             
 
         # Add admins host to the network
@@ -43,7 +52,7 @@ class MyTopology(Topo):
             host = self.addHost(name, ip=ip_address, defaultRoute='via 192.168.1.1')
             host_number += 1
             address_number += 1
-            self.addLink(switch, host)
+            self.addLink(switches["admins"], host)
 
         host_number = 1
         # Add workers host to the network
@@ -53,7 +62,7 @@ class MyTopology(Topo):
             host = self.addHost(name, ip=ip_address, defaultRoute='via 192.168.1.1')
             host_number += 1
             address_number += 1
-            self.addLink(switch, host)
+            self.addLink(switches["workers"], host)
 
 
         server = self.addHost(hosts_names['server'].format(1),
@@ -66,8 +75,8 @@ class MyTopology(Topo):
                            ip=ip_addresses['DMZ'].format(address_number),
                            defaultRoute='via 192.168.1.1')
 
-        self.addLink(switch, web)
-        self.addLink(switch, server)
+        self.addLink(switches["DMZ"], web)
+        self.addLink(switches["server"], server)
 
 
 topos = {'topo': (lambda admins=2, workers=2: MyTopology(admins=admins, workers=workers))}
