@@ -4,20 +4,22 @@
     <head>
         <meta charset="utf-8">
         <title>Teleservice</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     </head>
     
     <body>
-        <h1>Teleservice</h1>
+        <h1 align="center" class="mb-5 mt-3">Teleservice</h1>
         
-        <div class ="form">
+        <div class ="form" align="center">
             <form role="form" action"/login" method="get" class="login-form">
-                <div class="form-group">
-                    <input type="text" name="username" value="%s" placeholder="Username" class="form-username form-control" id="form-username">
+                <div class="form-group my-3">
+                    <input type="text"  name="username" value="%s" placeholder="Username" class="form-username form-control-lg" id="form-username">
                 </div>
-                <div class="form-group">
-                    <input type="password" name="password" placeholder="Password" class="form-password form-control" id="form-password">
+                <div class="form-group mb-3">
+                    <input type="password" name="password" placeholder="Password" class="form-password form-control-lg" id="form-password">
                 </div>
-                <button type="submit" class="btn">Log in</button>
+                <button type="submit" class="btn btn-primary">Log in</button>
             </form>
         </div>
 

@@ -18,7 +18,7 @@ app = application = myapp = SessionMiddleware(app(), session_opts)
 def root_page():
     session = request.environ.get('beaker.session')
     if ('log_in' in session and session['log_in'] == True):
-        return template("welcome", name=session['login'])
+        return template("welcome.html", name=session['login'])
     else:
         session['log_in'] = False
         redirect("/login")
